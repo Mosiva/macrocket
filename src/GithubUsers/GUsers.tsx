@@ -77,6 +77,7 @@ export const GUsersList = (props: GUserListPropsType) => {
 type TimerProps = {
     seconds: number
     onChange: (actualSeconds: number) => void
+    timerKey: string
 }
 export const GTimer = (props: TimerProps) => {
     const [seconds, setSeconds] = useState(props.seconds)
@@ -88,12 +89,14 @@ export const GTimer = (props: TimerProps) => {
     useEffect(() => {
         props.onChange(seconds)
     }, [seconds])
+
     useEffect(() => {
-        setInterval(() => {
+        const intervalId = setInterval(() => {
             console.log('tick')
             setSeconds((prev) => prev - 1)
         }, 1000)
-    }, [])
+        return ()=> {clearInterval(intervalId)} 
+    }, [props.timerKey])
     return (
         <div>{seconds}</div>
     )
@@ -115,8 +118,9 @@ export const GUserDetails = (props: GUserDetailsPropsType) => {
             axios
                 .get<UserType>(`https://api.github.com/users/${props.user.login}`)
                 .then(res => {
-                    setUserDetails(res.data)
                     setSeconds(startTimerSeconds)
+                    setUserDetails(res.data)
+        
                 })
         }
     }, [props.user])
@@ -129,7 +133,7 @@ export const GUserDetails = (props: GUserDetailsPropsType) => {
     return (
         <div>
             {userDetails && <div>
-                <GTimer seconds={seconds} onChange={setSeconds} />
+                <GTimer seconds={seconds} onChange={setSeconds} timerKey={userDetails.id.toString()}/>
                 <h2> {userDetails.login}</h2>
                 <img src={userDetails.avatar_url} />
                 <br />
