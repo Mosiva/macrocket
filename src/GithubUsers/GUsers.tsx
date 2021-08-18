@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
-import { Col, Row, Container, Button } from 'react-bootstrap'
+import { Col, Row, Container, Button, Form } from 'react-bootstrap'
 import s from './GUsers.module.css'
 
 type SearchUserType = {
@@ -38,9 +38,16 @@ export const GSearch = (props: SearchPropsType) => {
 
     return (
         <div>
-            <input placeholder='search' value={tempSearch} onChange={(e) => { setTempSearch(e.currentTarget.value) }} /> <button onClick={() => {
-                props.onSubmit(tempSearch)
-            }}>find</button>
+            <Row>
+            <Col>
+                <Form.Control type="text" placeholder='search' value={tempSearch} onChange={(e) => { setTempSearch(e.currentTarget.value) }} />
+            </Col>
+            <Col>
+                <Button onClick={() => {
+                    props.onSubmit(tempSearch)
+                }}>Search</Button>
+            </Col>
+            </Row>
         </div>
     )
 }
@@ -95,7 +102,7 @@ export const GTimer = (props: TimerProps) => {
             console.log('tick')
             setSeconds((prev) => prev - 1)
         }, 1000)
-        return ()=> {clearInterval(intervalId)} 
+        return () => { clearInterval(intervalId) }
     }, [props.timerKey])
     return (
         <div>{seconds}</div>
@@ -120,7 +127,7 @@ export const GUserDetails = (props: GUserDetailsPropsType) => {
                 .then(res => {
                     setSeconds(startTimerSeconds)
                     setUserDetails(res.data)
-        
+
                 })
         }
     }, [props.user])
@@ -133,7 +140,7 @@ export const GUserDetails = (props: GUserDetailsPropsType) => {
     return (
         <div>
             {userDetails && <div>
-                <GTimer seconds={seconds} onChange={setSeconds} timerKey={userDetails.id.toString()}/>
+                <GTimer seconds={seconds} onChange={setSeconds} timerKey={userDetails.id.toString()} />
                 <h2> {userDetails.login}</h2>
                 <img src={userDetails.avatar_url} />
                 <br />
